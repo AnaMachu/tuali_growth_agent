@@ -3,4 +3,4 @@ name = "tuali-growth-agent"
 version = "0.1.0"
 
 [project.scripts]
-app = "backend.main:app"
+app = "main:app"
