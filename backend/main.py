@@ -22,3 +22,8 @@ app.include_router(yomp_router)
 @app.get("/")
 def health_check() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/health")
+def health_check_alias() -> dict[str, str]:
+    return {"status": "ok"}

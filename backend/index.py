@@ -1,4 +1,8 @@
 """Vercel entrypoint for FastAPI application."""
-from main import app
+
+try:
+    from .main import app
+except ImportError:
+    from main import app
 
 __all__ = ["app"]
