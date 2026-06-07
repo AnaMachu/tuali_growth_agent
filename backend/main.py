@@ -19,6 +19,6 @@ app.include_router(tts_router)
 app.include_router(yomp_router)
 
 
-@app.get("/health")
+@app.get("/")
 def health_check() -> dict[str, str]:
     return {"status": "ok"}
