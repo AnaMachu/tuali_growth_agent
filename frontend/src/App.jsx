@@ -9,7 +9,7 @@ function LiquidBackground() {
           inset: 0;
           overflow: hidden;
           z-index: 0;
-          background: #fff8f3;
+          background: white;
         }
         .liquid-layer {
           position: absolute;
@@ -19,33 +19,44 @@ function LiquidBackground() {
           animation: liquidDrift 16s ease-in-out infinite alternate;
         }
         .liquid-layer.one {
-          background:
-            radial-gradient(circle at 18% 28%, rgba(228,0,43,0.58), transparent 32%),
-            radial-gradient(circle at 75% 25%, rgba(241,99,33,0.52), transparent 35%),
-            radial-gradient(circle at 45% 78%, rgba(255,184,0,0.45), transparent 38%),
-            radial-gradient(circle at 20% 82%, rgba(255,80,120,0.42), transparent 34%);
-        }
+        animation: liquidDrift 8s ease-in-out infinite alternate;
+}
         .liquid-layer.two {
-          opacity: 0.7;
-          filter: blur(110px);
-          mix-blend-mode: multiply;
-          animation: liquidDriftTwo 22s ease-in-out infinite alternate;
-          background:
-            radial-gradient(circle at 70% 72%, rgba(228,0,43,0.30), transparent 34%),
-            radial-gradient(circle at 35% 40%, rgba(255,150,0,0.35), transparent 36%),
-            radial-gradient(circle at 85% 35%, rgba(255,210,120,0.35), transparent 35%);
-        }
+        animation: liquidDriftTwo 10s ease-in-out infinite alternate;
+}
         .soft-white-center {
           position: absolute;
           inset: 0;
-          background: radial-gradient(circle at center, rgba(255,255,255,0.62), rgba(255,255,255,0.18), transparent 75%);
+          background: radial-gradient(circle at center, rgba(255,255,255,0.55), rgba(255,255,255,0.1), transparent 75%);
           pointer-events: none;
         }
         @keyframes liquidDrift {
-          0% { transform: translate3d(-4%,-3%,0) scale(1) rotate(0deg); }
-          50% { transform: translate3d(5%,4%,0) scale(1.16) rotate(18deg); }
-          100% { transform: translate3d(-2%,6%,0) scale(1.08) rotate(-12deg); }
-        }
+  0% {
+    transform: translate3d(-15%,-10%,0) scale(1) rotate(0deg);
+  }
+
+  50% {
+    transform: translate3d(15%,10%,0) scale(1.25) rotate(25deg);
+  }
+
+  100% {
+    transform: translate3d(-10%,15%,0) scale(1.1) rotate(-15deg);
+  }
+}
+
+@keyframes liquidDriftTwo {
+  0% {
+    transform: translate3d(12%,8%,0) scale(1.1) rotate(0deg);
+  }
+
+  50% {
+    transform: translate3d(-18%,-10%,0) scale(1.3) rotate(-25deg);
+  }
+
+  100% {
+    transform: translate3d(10%,-12%,0) scale(1.15) rotate(18deg);
+  }
+}
         @keyframes liquidDriftTwo {
           0% { transform: translate3d(5%,4%,0) scale(1.08) rotate(0deg); }
           50% { transform: translate3d(-7%,-4%,0) scale(1.20) rotate(-22deg); }
@@ -66,12 +77,12 @@ function GlassCard({ children, style = {}, onClick, onMouseEnter, onMouseLeave }
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       style={{
-        background: "rgba(255,255,255,0.58)",
-        backdropFilter: "blur(28px)",
-        WebkitBackdropFilter: "blur(28px)",
-        border: "1px solid rgba(255,255,255,0.5)",
+        background: "rgba(255,255,255,0.25)",
+        backdropFilter: "blur(32px) saturate(180%)",
+        WebkitBackdropFilter: "blur(32px) saturate(180%)",
+        border: "1px solid rgba(255,255,255,0.6)",
         borderRadius: "24px",
-        boxShadow: "0 8px 40px rgba(228,0,43,0.08), 0 2px 12px rgba(0,0,0,0.06)",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.08), inset 0 1.5px 0 rgba(255,255,255,0.85), inset 0 -1px 0 rgba(255,255,255,0.3)",
         ...style
       }}
     >
@@ -82,12 +93,11 @@ function GlassCard({ children, style = {}, onClick, onMouseEnter, onMouseLeave }
 
 export default function App() {
   const [screen, setScreen] = useState("inicio")
-  const [concentrated, setConcentrated] = useState(false)
 
   const goToProcesando = () => {
-    setConcentrated(true)
     setTimeout(() => setScreen("procesando"), 800)
     setTimeout(() => setScreen("chat"), 4500)
+    setScreen("procesando")
   }
 
   return (
@@ -226,37 +236,72 @@ function PaginaInicio({ onAllie }) {
 }
 
 function PantallaBienvenido({ onNext }) {
-  const [phase, setPhase] = useState("bienvenido")
+  const [phase, setPhase] = useState("logo")
 
   useEffect(() => {
-    const t = setTimeout(() => setPhase("subtitle"), 2500)
+    const t = setTimeout(() => setPhase("start"), 1900)
     return () => clearTimeout(t)
   }, [])
 
   return (
-    <div style={{position: "fixed", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 50}}>
+    <div style={{position:"fixed",inset:0,display:"flex",alignItems:"center",justifyContent:"center",zIndex:50,overflow:"hidden",background:"linear-gradient(135deg, #E4002B 0%, #F16321 60%, #FFB800 100%)"}}>
       <style>{`
-        @keyframes fadeInUp {
-          from { opacity:0; transform:translateY(40px); }
-          to { opacity:1; transform:translateY(0); }
+        @keyframes logoIntro {
+          0% { opacity:0; transform:scale(0.82) translateY(24px); filter:blur(8px); }
+          100% { opacity:1; transform:scale(1) translateY(0); filter:blur(0); }
+        }
+        @keyframes logoMoveUp {
+          0% { transform:translateY(0) scale(1); opacity:1; }
+          100% { transform:translateY(-145px) scale(0.62); opacity:1; }
+        }
+        @keyframes contentUp {
+          0% { opacity:0; transform:translateY(90px); filter:blur(10px); }
+          100% { opacity:1; transform:translateY(0); filter:blur(0); }
+        }
+        @keyframes buttonUp {
+          0% { opacity:0; transform:translateY(36px) scale(0.96); }
+          100% { opacity:1; transform:translateY(0) scale(1); }
         }
       `}</style>
-      <div style={{textAlign: "center", padding: "0 40px"}}>
-        {phase === "bienvenido" && (
-          <h1 style={{fontSize: "clamp(64px,10vw,110px)", fontWeight: "900", color: "#1A1A1A", letterSpacing: "-3px", lineHeight: "1", animation: "fadeInUp 0.9s ease forwards"}}>
-            Bienvenido
-          </h1>
-        )}
-        {phase === "subtitle" && (
-          <div style={{animation: "fadeInUp 0.8s ease forwards"}}>
-            <p style={{fontSize: "clamp(24px,3.5vw,40px)", fontWeight: "400", color: "#1A1A1A", lineHeight: "1.35", maxWidth: "560px", margin: "0 auto 48px"}}>
+
+      <div style={{textAlign:"center", color:"white", width:"100%", padding:"0 32px"}}>
+        <h1 style={{
+          fontSize:"clamp(76px,13vw,170px)",
+          fontWeight:"950",
+          letterSpacing:"-8px",
+          lineHeight:"0.9",
+          margin:0,
+          color:"white",
+          animation: phase === "logo"
+            ? "logoIntro 1s cubic-bezier(0.16,1,0.3,1) forwards"
+            : "logoMoveUp 1s cubic-bezier(0.16,1,0.3,1) forwards",
+        }}>
+          tuali
+        </h1>
+
+        {phase === "start" && (
+          <div style={{marginTop:"-20px", animation:"contentUp 1s cubic-bezier(0.16,1,0.3,1) forwards"}}>
+            <p style={{fontSize:"clamp(24px,3.5vw,44px)", fontWeight:"500", lineHeight:"1.25", maxWidth:"680px", margin:"0 auto 42px", color:"white"}}>
               Empecemos con tu análisis de negocio
             </p>
             <button
               onClick={onNext}
-              style={{background: "linear-gradient(to right, #E4002B, #F16321)", border: "none", borderRadius: "50px", padding: "16px 48px", fontSize: "18px", fontWeight: "700", color: "white", cursor: "pointer", fontFamily: "Nunito, sans-serif", boxShadow: "0 8px 32px rgba(228,0,43,0.28)", transition: "all 0.2s"}}
-              onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
-              onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+              style={{
+                background:"white",
+                color:"#E4002B",
+                border:"none",
+                borderRadius:"999px",
+                padding:"16px 46px",
+                fontSize:"18px",
+                fontWeight:"800",
+                cursor:"pointer",
+                fontFamily:"Nunito,sans-serif",
+                boxShadow:"0 18px 50px rgba(0,0,0,0.2)",
+                animation:"buttonUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.15s both",
+                transition:"transform 0.2s ease",
+              }}
+              onMouseEnter={e => e.currentTarget.style.transform="scale(1.05)"}
+              onMouseLeave={e => e.currentTarget.style.transform="scale(1)"}
             >
               Continuar →
             </button>
@@ -266,166 +311,99 @@ function PantallaBienvenido({ onNext }) {
     </div>
   )
 }
-
 function PantallaHerramientas({ onNext }) {
   const btnBase = {
-    width: "100%", padding: "15px 18px", borderRadius: "14px",
-    border: "1.5px solid rgba(228,0,43,0.4)",
-    background: "rgba(255,255,255,0.5)",
-    backdropFilter: "blur(12px)",
-    color: "#1A1A1A", fontWeight: "600", fontSize: "15px",
-    cursor: "pointer", fontFamily: "Nunito, sans-serif", transition: "all 0.2s",
-    textAlign: "left", display: "flex", alignItems: "center", justifyContent: "space-between"
+    width:"100%", padding:"15px 18px", borderRadius:"14px",
+    border:"1px solid rgba(255,255,255,0.35)",
+    background:"rgba(255,255,255,0.15)",
+    backdropFilter:"blur(16px)",
+    WebkitBackdropFilter:"blur(16px)",
+    color:"white", fontWeight:"600", fontSize:"15px",
+    cursor:"pointer", fontFamily:"Nunito,sans-serif", transition:"all 0.2s",
+    textAlign:"left", display:"flex", alignItems:"center", justifyContent:"space-between",
+    boxShadow:"inset 0 1px 0 rgba(255,255,255,0.4)"
   }
 
   return (
-    <div style={{position: "fixed", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 50}}>
-      <style>{`@keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }`}</style>
-      <GlassCard style={{padding: "40px", maxWidth: "500px", width: "90%", animation: "fadeInUp 0.6s ease forwards"}}>
-        <div style={{display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px"}}>
-          <span style={{fontWeight: "900", fontSize: "20px", background: "linear-gradient(to right, #E4002B, #F16321)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"}}>✨ Allie</span>
-        </div>
-        <p style={{fontSize: "16px", fontWeight: "700", color: "#1A1A1A", marginBottom: "6px", lineHeight: "1.4"}}>
-          Para generar el análisis de tu negocio, utilizo tu información en Tuali.
-        </p>
-        <p style={{fontSize: "14px", color: "#666", marginBottom: "24px", lineHeight: "1.5"}}>
-          ¿Te gustaría complementar el análisis con alguna de estas herramientas de ventas?
-        </p>
-        <div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
-          <button
-            onClick={onNext}
-            style={{...btnBase, background: "linear-gradient(to right, #E4002B, #F16321)", color: "white", border: "none", backdropFilter: "none"}}
-            onMouseEnter={e => e.currentTarget.style.transform = "scale(1.02)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
-          >
-            <span>Continuar solo con Tuali</span><span>→</span>
-          </button>
-          {["Yomp!", "Terminal de pago", "Ingresar datos manualmente"].map(opt => (
-            <button key={opt} style={btnBase}
-              onMouseEnter={e => { e.currentTarget.style.background = "rgba(228,0,43,0.08)"; e.currentTarget.style.borderColor = "#E4002B" }}
-              onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.5)"; e.currentTarget.style.borderColor = "rgba(228,0,43,0.4)" }}
+    <div style={{position:"fixed",inset:0,zIndex:50,overflow:"hidden"}}>
+      <style>{`@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}`}</style>
+
+      {/* Fondo rojo-naranja igual que la pantalla de bienvenido */}
+      <div style={{
+        position:"absolute",inset:0,
+        background:"#ff2413",
+      }}/>
+
+      {/* Liquid glass card centrada encima */}
+      <div style={{position:"relative",zIndex:1,height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
+        <div style={{
+          background:"rgba(255,255,255,0.15)",
+          backdropFilter:"blur(32px) saturate(180%)",
+          WebkitBackdropFilter:"blur(32px) saturate(180%)",
+          border:"1px solid rgba(255,255,255,0.4)",
+          borderRadius:"24px",
+          boxShadow:"0 8px 32px rgba(0,0,0,0.12), inset 0 1.5px 0 rgba(255,255,255,0.7), inset 0 -1px 0 rgba(255,255,255,0.2)",
+          padding:"40px",maxWidth:"500px",width:"90%",
+          animation:"fadeInUp 0.6s ease forwards"
+        }}>
+          <div style={{display:"flex",alignItems:"center",gap:"10px",marginBottom:"10px"}}>
+            <span style={{fontWeight:"900",fontSize:"20px",color:"white"}}>✨ Allie</span>
+          </div>
+          <p style={{fontSize:"16px",fontWeight:"700",color:"white",marginBottom:"6px",lineHeight:"1.4"}}>
+            Para generar el análisis de tu negocio, utilizo tu información en Tuali.
+          </p>
+          <p style={{fontSize:"14px",color:"rgba(255,255,255,0.8)",marginBottom:"24px",lineHeight:"1.5"}}>
+            ¿Te gustaría complementar el análisis con alguna de estas herramientas de ventas?
+          </p>
+          <div style={{display:"flex",flexDirection:"column",gap:"10px"}}>
+            <button
+              onClick={onNext}
+              style={{...btnBase,background:"white",color:"#E4002B",border:"none",fontWeight:"700",boxShadow:"0 8px 24px rgba(0,0,0,0.15)"}}
+              onMouseEnter={e => e.currentTarget.style.transform="scale(1.02)"}
+              onMouseLeave={e => e.currentTarget.style.transform="scale(1)"}
             >
-              <span>{opt}</span><span style={{color: "#E4002B"}}>→</span>
+              <span>Continuar solo con Tuali</span><span>→</span>
             </button>
-          ))}
+            {["Yomp!","Terminal de pago","Ingresar datos manualmente"].map(opt => (
+              <button key={opt} style={btnBase}
+                onMouseEnter={e => {e.currentTarget.style.background="rgba(255,255,255,0.28)"}}
+                onMouseLeave={e => {e.currentTarget.style.background="rgba(255,255,255,0.15)"}}
+              >
+                <span>{opt}</span><span style={{color:"rgba(255,255,255,0.7)"}}>→</span>
+              </button>
+            ))}
+          </div>
         </div>
-      </GlassCard>
+      </div>
     </div>
   )
 }
+
 
 function PantallaProcesando() {
   return (
     <div style={{position: "fixed", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 50}}>
       <style>{`
-        .fluid-orb-wrapper {
-          position: relative;
-          width: 300px;
-          height: 300px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .fluid-orb-glow {
-          position: absolute;
-          width: 360px;
-          height: 360px;
-          border-radius: 999px;
-          background: radial-gradient(circle, rgba(255,184,0,0.45), rgba(241,99,33,0.25), rgba(228,0,43,0.12), transparent 70%);
-          filter: blur(45px);
-          animation: glowBreath 4s ease-in-out infinite;
-        }
-        .fluid-orb {
-          position: relative;
-          width: 250px;
-          height: 250px;
-          overflow: hidden;
-          border-radius: 54% 46% 48% 52% / 48% 55% 45% 52%;
-          background:
-            radial-gradient(circle at 32% 62%, rgba(220,40,130,0.82), transparent 34%),
-            radial-gradient(circle at 48% 48%, rgba(255,75,120,0.74), transparent 40%),
-            radial-gradient(circle at 35% 32%, rgba(255,140,20,0.85), transparent 34%),
-            radial-gradient(circle at 72% 35%, rgba(255,225,120,0.82), transparent 42%),
-            radial-gradient(circle at 75% 72%, rgba(255,240,160,0.72), transparent 44%);
-          filter: blur(0.2px);
-          animation: orbMorph 7s ease-in-out infinite, orbFloat 8s ease-in-out infinite;
-          box-shadow: 0 24px 90px rgba(228,0,43,0.18), 0 0 110px rgba(255,184,0,0.25);
-        }
-        .fluid-orb::before {
-          content: "";
-          position: absolute;
-          inset: -35%;
-          background:
-            radial-gradient(circle at 42% 55%, rgba(255,40,130,0.75), transparent 30%),
-            radial-gradient(circle at 35% 28%, rgba(255,130,20,0.85), transparent 28%),
-            radial-gradient(circle at 76% 32%, rgba(255,230,120,0.80), transparent 42%);
-          filter: blur(22px);
-          animation: innerFlowA 5.5s ease-in-out infinite;
-          mix-blend-mode: screen;
-        }
-        .fluid-orb::after {
-          content: "";
-          position: absolute;
-          inset: -30%;
-          background:
-            radial-gradient(circle at 55% 55%, rgba(220,60,150,0.65), transparent 36%),
-            radial-gradient(circle at 75% 38%, rgba(255,220,95,0.74), transparent 44%);
-          filter: blur(26px);
-          animation: innerFlowB 6.8s ease-in-out infinite;
-          mix-blend-mode: multiply;
-        }
-        .orb-soft-mask {
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          background: radial-gradient(circle at 50% 50%, transparent 30%, rgba(255,255,255,0.18) 100%);
-          pointer-events: none;
-        }
-        @keyframes orbMorph {
-          0%   { border-radius: 52% 48% 45% 55% / 50% 45% 55% 50%; }
-          25%  { border-radius: 58% 42% 54% 46% / 42% 58% 45% 55%; }
-          50%  { border-radius: 45% 55% 60% 40% / 58% 42% 52% 48%; }
-          75%  { border-radius: 60% 40% 42% 58% / 45% 55% 58% 42%; }
-          100% { border-radius: 52% 48% 45% 55% / 50% 45% 55% 50%; }
-        }
-        @keyframes orbFloat {
-          0%,100% { transform: translateY(0) scale(1); }
-          50%      { transform: translateY(-8px) scale(1.03); }
-        }
-        @keyframes innerFlowA {
-          0%   { transform: translate(-12%,6%) rotate(0deg) scale(1); }
-          50%  { transform: translate(12%,-10%) rotate(55deg) scale(1.25); }
-          100% { transform: translate(-12%,6%) rotate(0deg) scale(1); }
-        }
-        @keyframes innerFlowB {
-          0%   { transform: translate(10%,-6%) rotate(0deg) scale(1.1); }
-          50%  { transform: translate(-12%,12%) rotate(-70deg) scale(1.35); }
-          100% { transform: translate(10%,-6%) rotate(0deg) scale(1.1); }
-        }
-        @keyframes glowBreath {
-          0%,100% { opacity: 0.52; transform: scale(0.95); }
-          50%      { opacity: 0.85; transform: scale(1.12); }
-        }
-        @keyframes fadeInUp {
-          from { opacity:0; transform:translateY(18px); }
-          to   { opacity:1; transform:translateY(0); }
-        }
+        .fluid-orb-wrapper { position:relative; width:300px; height:300px; display:flex; align-items:center; justify-content:center; }
+        .fluid-orb-glow { position:absolute; width:360px; height:360px; border-radius:999px; background:radial-gradient(circle,rgba(255,184,0,0.45),rgba(241,99,33,0.25),rgba(228,0,43,0.12),transparent 70%); filter:blur(45px); animation:glowBreath 4s ease-in-out infinite; }
+        .fluid-orb { position:relative; width:250px; height:250px; overflow:hidden; border-radius:54% 46% 48% 52% / 48% 55% 45% 52%; background: radial-gradient(circle at 32% 62%,rgba(228,0,43,0.82),transparent 34%), radial-gradient(circle at 48% 48%,rgba(241,99,33,0.74),transparent 40%), radial-gradient(circle at 35% 32%,rgba(255,140,20,0.85),transparent 34%), radial-gradient(circle at 72% 35%,rgba(255,184,0,0.82),transparent 42%), radial-gradient(circle at 75% 72%,rgba(255,220,80,0.72),transparent 44%); filter:blur(0.2px); animation:orbMorph 7s ease-in-out infinite,orbFloat 8s ease-in-out infinite; box-shadow:0 24px 90px rgba(228,0,43,0.18),0 0 110px rgba(255,184,0,0.25); }
+        .fluid-orb::before { content:""; position:absolute; inset:-35%; background: radial-gradient(circle at 42% 55%,rgba(228,0,43,0.75),transparent 30%), radial-gradient(circle at 35% 28%,rgba(255,130,20,0.85),transparent 28%), radial-gradient(circle at 76% 32%,rgba(255,184,0,0.80),transparent 42%); filter:blur(22px); animation:innerFlowA 5.5s ease-in-out infinite; mix-blend-mode:screen; }
+        .fluid-orb::after { content:""; position:absolute; inset:-30%; background: radial-gradient(circle at 55% 55%,rgba(228,0,43,0.65),transparent 36%), radial-gradient(circle at 75% 38%,rgba(255,184,0,0.74),transparent 44%); filter:blur(26px); animation:innerFlowB 6.8s ease-in-out infinite; mix-blend-mode:multiply; }
+        .orb-soft-mask { position:absolute; inset:0; border-radius:inherit; background:radial-gradient(circle at 50% 50%,transparent 30%,rgba(255,255,255,0.18) 100%); pointer-events:none; }
+        @keyframes orbMorph { 0%{border-radius:52% 48% 45% 55%/50% 45% 55% 50%} 25%{border-radius:58% 42% 54% 46%/42% 58% 45% 55%} 50%{border-radius:45% 55% 60% 40%/58% 42% 52% 48%} 75%{border-radius:60% 40% 42% 58%/45% 55% 58% 42%} 100%{border-radius:52% 48% 45% 55%/50% 45% 55% 50%} }
+        @keyframes orbFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-8px) scale(1.03)} }
+        @keyframes innerFlowA { 0%{transform:translate(-12%,6%) rotate(0deg) scale(1)} 50%{transform:translate(12%,-10%) rotate(55deg) scale(1.25)} 100%{transform:translate(-12%,6%) rotate(0deg) scale(1)} }
+        @keyframes innerFlowB { 0%{transform:translate(10%,-6%) rotate(0deg) scale(1.1)} 50%{transform:translate(-12%,12%) rotate(-70deg) scale(1.35)} 100%{transform:translate(10%,-6%) rotate(0deg) scale(1.1)} }
+        @keyframes glowBreath { 0%,100%{opacity:0.52;transform:scale(0.95)} 50%{opacity:0.85;transform:scale(1.12)} }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
       `}</style>
-
       <div className="fluid-orb-wrapper">
         <div className="fluid-orb-glow" />
-        <div className="fluid-orb">
-          <div className="orb-soft-mask" />
-        </div>
+        <div className="fluid-orb"><div className="orb-soft-mask" /></div>
       </div>
-
-      <div style={{textAlign: "center", marginTop: "42px", animation: "fadeInUp 0.8s ease 0.3s both"}}>
-        <p style={{fontSize: "22px", fontWeight: "800", color: "#1A1A1A", marginBottom: "10px"}}>
-          Estoy generando tu análisis de negocio
-        </p>
-        <p style={{fontSize: "15px", color: "#777"}}>
-          Esto tomará solo unos segundos
-        </p>
+      <div style={{textAlign:"center",marginTop:"42px",animation:"fadeInUp 0.8s ease 0.3s both"}}>
+        <p style={{fontSize:"22px",fontWeight:"800",color:"#1A1A1A",marginBottom:"10px"}}>Estoy generando tu análisis de negocio</p>
+        <p style={{fontSize:"15px",color:"#777"}}>Esto tomará solo unos segundos</p>
       </div>
     </div>
   )
@@ -451,88 +429,171 @@ function PantallaChat() {
     setIsTyping(true)
     setTimeout(() => {
       setIsTyping(false)
-      setMessages(prev => [...prev, {
-        from: "allie",
-        text: "Entendido, voy a trabajar en eso para ti."
-      }])
+      setMessages(prev => [...prev, { from: "allie", text: "Entendido, voy a trabajar en eso para ti." }])
     }, 1800)
   }
 
   const AllieAvatar = () => (
-    <div style={{width: "32px", height: "32px", borderRadius: "50%", background: "linear-gradient(135deg, #E4002B, #F16321, #FFB800)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", flexShrink: 0}}>✨</div>
+    <div style={{width:"32px",height:"32px",borderRadius:"50%",background:"linear-gradient(135deg,#E4002B,#F16321,#FFB800)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"14px",flexShrink:0}}>✨</div>
   )
 
   return (
-    <div style={{position: "fixed", inset: 0, display: "flex", flexDirection: "column", zIndex: 50, background: "white"}}>
+    <div style={{position:"fixed",inset:0,display:"flex",flexDirection:"column",zIndex:50,background:"white",overflow:"hidden"}}>
       <style>{`
-        @keyframes fadeInUp {
-          from { opacity:0; transform:translateY(12px); }
-          to   { opacity:1; transform:translateY(0); }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes typingDot { 0%,80%,100%{transform:scale(0.6);opacity:0.3} 40%{transform:scale(1);opacity:1} }
+
+        @keyframes intenseRibbonOne {
+          0% {
+            transform: translate3d(-12%, -12%, 0) rotate(-8deg) scaleX(1);
+            background-position: 0% 50%;
+          }
+          50% {
+            transform: translate3d(10%, 6%, 0) rotate(-2deg) scaleX(1.16);
+            background-position: 100% 50%;
+          }
+          100% {
+            transform: translate3d(-6%, 10%, 0) rotate(-13deg) scaleX(1.05);
+            background-position: 0% 50%;
+          }
         }
-        @keyframes typingDot {
-          0%,80%,100% { transform:scale(0.6); opacity:0.3; }
-          40%          { transform:scale(1); opacity:1; }
+
+        @keyframes intenseRibbonTwo {
+          0% {
+            transform: translate3d(10%, 8%, 0) rotate(7deg) scaleX(1.05);
+            background-position: 100% 50%;
+          }
+          50% {
+            transform: translate3d(-10%, -8%, 0) rotate(1deg) scaleX(1.24);
+            background-position: 0% 50%;
+          }
+          100% {
+            transform: translate3d(6%, -4%, 0) rotate(11deg) scaleX(1.08);
+            background-position: 100% 50%;
+          }
         }
+
+        @keyframes intenseRibbonThree {
+          0% {
+            transform: translate3d(-4%, 0%, 0) rotate(-4deg) scaleX(1);
+            opacity: 0.9;
+          }
+          50% {
+            transform: translate3d(6%, -5%, 0) rotate(4deg) scaleX(1.18);
+            opacity: 1;
+          }
+          100% {
+            transform: translate3d(-8%, 4%, 0) rotate(-7deg) scaleX(1.04);
+            opacity: 0.95;
+          }
+        }
+
         .chat-msg { animation: fadeInUp 0.3s ease forwards; }
-        .typing-dot { width:7px; height:7px; border-radius:50%; background:#ccc; display:inline-block; margin:0 2px; animation:typingDot 1.2s ease-in-out infinite; }
-        .typing-dot:nth-child(2) { animation-delay:0.2s; }
-        .typing-dot:nth-child(3) { animation-delay:0.4s; }
-        .chat-input-box { border:1.5px solid #e5e5e5; border-radius:28px; padding:14px 20px; font-size:15px; font-family:Nunito,sans-serif; width:100%; background:white; transition:border-color 0.2s; resize:none; outline:none; }
-        .chat-input-box:focus { border-color:#E4002B; }
-        .send-btn { width:40px; height:40px; border-radius:50%; background:linear-gradient(to right,#E4002B,#F16321); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:white; font-size:18px; flex-shrink:0; transition:transform 0.15s; box-shadow:0 4px 14px rgba(228,0,43,0.25); }
-        .send-btn:hover { transform:scale(1.08); }
-        .send-btn:disabled { background:#e5e5e5; box-shadow:none; cursor:not-allowed; }
+        .typing-dot { width:7px;height:7px;border-radius:50%;background:#ccc;display:inline-block;margin:0 2px;animation:typingDot 1.2s ease-in-out infinite; }
+        .typing-dot:nth-child(2){animation-delay:0.2s}
+        .typing-dot:nth-child(3){animation-delay:0.4s}
+        .send-btn { width:40px;height:40px;border-radius:50%;background:linear-gradient(to right,#E4002B,#F16321);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;flex-shrink:0;transition:transform 0.15s;box-shadow:0 4px 14px rgba(228,0,43,0.25); }
+        .send-btn:hover{transform:scale(1.08)}
+        .send-btn:disabled{background:#e5e5e5;box-shadow:none;cursor:not-allowed}
       `}</style>
 
-      {/* Header mínimo */}
-      <div style={{padding: "16px 24px", borderBottom: "1px solid #f0f0f0", display: "flex", alignItems: "center", gap: "10px"}}>
-        <div style={{width: "36px", height: "36px", borderRadius: "50%", background: "linear-gradient(135deg, #E4002B, #F16321, #FFB800)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px"}}>✨</div>
-        <div>
-          <p style={{fontWeight: "800", fontSize: "15px", color: "#1A1A1A", lineHeight: 1}}>Allie</p>
-          <p style={{fontSize: "11px", color: "#22C55E", fontWeight: "600", marginTop: "2px"}}>● En línea</p>
-        </div>
-        <span style={{marginLeft: "auto", fontWeight: "900", fontSize: "17px", letterSpacing: "-0.5px", background: "linear-gradient(to right,#E4002B,#F16321)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"}}>túali</span>
+      <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none",zIndex:0}}>
+        <div style={{
+          position:"absolute",
+          top:"34%",
+          left:"-24%",
+          width:"150%",
+          height:"36%",
+          borderRadius:"999px",
+          background:"linear-gradient(90deg, transparent 0%, rgba(228,0,43,0.78) 18%, rgba(255,32,32,0.88) 34%, rgba(241,99,33,0.92) 52%, rgba(255,122,0,0.82) 68%, rgba(255,184,0,0.58) 82%, transparent 100%)",
+          backgroundSize:"220% 220%",
+          filter:"blur(26px)",
+          transformOrigin:"center",
+          animation:"intenseRibbonOne 9s ease-in-out infinite alternate",
+          opacity:0.95
+        }}/>
+
+        <div style={{
+          position:"absolute",
+          top:"43%",
+          left:"-22%",
+          width:"145%",
+          height:"30%",
+          borderRadius:"999px",
+          background:"linear-gradient(90deg, transparent 0%, rgba(255,184,0,0.60) 18%, rgba(255,122,0,0.85) 34%, rgba(241,99,33,0.92) 52%, rgba(228,0,43,0.86) 72%, transparent 100%)",
+          backgroundSize:"240% 240%",
+          filter:"blur(34px)",
+          transformOrigin:"center",
+          animation:"intenseRibbonTwo 11s ease-in-out infinite alternate",
+          mixBlendMode:"multiply",
+          opacity:0.85
+        }}/>
+
+        <div style={{
+          position:"absolute",
+          top:"50%",
+          left:"-18%",
+          width:"136%",
+          height:"18%",
+          borderRadius:"999px",
+          background:"linear-gradient(90deg, transparent 0%, rgba(228,0,43,0.40) 18%, rgba(241,99,33,0.70) 45%, rgba(255,184,0,0.45) 70%, transparent 100%)",
+          filter:"blur(42px)",
+          transformOrigin:"center",
+          animation:"intenseRibbonThree 7s ease-in-out infinite alternate",
+          opacity:0.9
+        }}/>
+
+        <div style={{
+          position:"absolute",
+          inset:0,
+          background:"linear-gradient(to bottom, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.22) 32%, rgba(255,255,255,0.80) 62%, white 100%)",
+          pointerEvents:"none"
+        }}/>
       </div>
 
-      {/* Área de mensajes o pantalla inicial */}
-      <div style={{flex: 1, overflowY: "auto", padding: "32px 20px", display: "flex", flexDirection: "column"}}>
+      <div style={{padding:"16px 24px",borderBottom:"1px solid rgba(0,0,0,0.06)",display:"flex",alignItems:"center",gap:"10px",position:"relative",zIndex:1,background:"rgba(255,255,255,0.7)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)"}}>
+        <div style={{width:"36px",height:"36px",borderRadius:"50%",background:"linear-gradient(135deg,#E4002B,#F16321,#FFB800)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"16px"}}>✨</div>
+        <div>
+          <p style={{fontWeight:"800",fontSize:"15px",color:"#1A1A1A",lineHeight:1}}>Allie</p>
+          <p style={{fontSize:"11px",color:"#22C55E",fontWeight:"600",marginTop:"2px"}}>● En línea</p>
+        </div>
+        <span style={{marginLeft:"auto",fontWeight:"900",fontSize:"17px",letterSpacing:"-0.5px",background:"linear-gradient(to right,#E4002B,#F16321)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>túali</span>
+      </div>
+
+      <div style={{flex:1,overflowY:"auto",padding:"32px 20px",display:"flex",flexDirection:"column",position:"relative",zIndex:1}}>
         {!started ? (
-          /* Estado inicial — centrado como ChatGPT */
-          <div style={{flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", gap: "12px"}}>
-            <div style={{width: "56px", height: "56px", borderRadius: "50%", background: "linear-gradient(135deg, #E4002B, #F16321, #FFB800)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "26px", boxShadow: "0 6px 24px rgba(228,0,43,0.25)", marginBottom: "8px"}}>✨</div>
-            <h1 style={{fontSize: "28px", fontWeight: "900", color: "#1A1A1A", lineHeight: 1.2}}>
+          <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",gap:"12px"}}>
+            <div style={{width:"56px",height:"56px",borderRadius:"50%",background:"linear-gradient(135deg,#E4002B,#F16321,#FFB800)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"26px",boxShadow:"0 6px 24px rgba(228,0,43,0.25)",marginBottom:"8px"}}>✨</div>
+            <h1 style={{fontSize:"28px",fontWeight:"900",color:"#1A1A1A",lineHeight:1.2}}>
               Hola, soy{" "}
-              <span style={{background: "linear-gradient(to right,#E4002B,#F16321)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"}}>
-                Allie
-              </span>
+              <span style={{background:"linear-gradient(to right,#E4002B,#F16321)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Allie</span>
             </h1>
-            <p style={{fontSize: "16px", color: "#666", maxWidth: "400px", lineHeight: 1.5}}>
+            <p style={{fontSize:"16px",color:"#666",maxWidth:"400px",lineHeight:1.5}}>
               Basándome en tu análisis de negocio, ¿qué quieres que hagamos?
             </p>
           </div>
         ) : (
-          /* Mensajes */
-          <div style={{display: "flex", flexDirection: "column", gap: "20px", maxWidth: "720px", margin: "0 auto", width: "100%"}}>
+          <div style={{display:"flex",flexDirection:"column",gap:"20px",maxWidth:"720px",margin:"0 auto",width:"100%"}}>
             {messages.map((msg, i) => (
               <div key={i} className="chat-msg">
                 {msg.from === "allie" ? (
-                  <div style={{display: "flex", gap: "10px", alignItems: "flex-start"}}>
+                  <div style={{display:"flex",gap:"10px",alignItems:"flex-start"}}>
                     <AllieAvatar />
-                    <p style={{fontSize: "15px", color: "#1A1A1A", lineHeight: 1.6, paddingTop: "4px"}}>{msg.text}</p>
+                    <p style={{fontSize:"15px",color:"#1A1A1A",lineHeight:1.6,paddingTop:"4px"}}>{msg.text}</p>
                   </div>
                 ) : (
-                  <div style={{display: "flex", justifyContent: "flex-end"}}>
-                    <div style={{background: "#f4f4f4", borderRadius: "20px 4px 20px 20px", padding: "12px 18px", maxWidth: "70%"}}>
-                      <p style={{fontSize: "15px", color: "#1A1A1A", lineHeight: 1.5}}>{msg.text}</p>
+                  <div style={{display:"flex",justifyContent:"flex-end"}}>
+                    <div style={{background:"#f4f4f4",borderRadius:"20px 4px 20px 20px",padding:"12px 18px",maxWidth:"70%"}}>
+                      <p style={{fontSize:"15px",color:"#1A1A1A",lineHeight:1.5}}>{msg.text}</p>
                     </div>
                   </div>
                 )}
               </div>
             ))}
             {isTyping && (
-              <div className="chat-msg" style={{display: "flex", gap: "10px", alignItems: "flex-start"}}>
+              <div className="chat-msg" style={{display:"flex",gap:"10px",alignItems:"flex-start"}}>
                 <AllieAvatar />
-                <div style={{background: "#f4f4f4", borderRadius: "20px", padding: "14px 18px"}}>
+                <div style={{background:"#f4f4f4",borderRadius:"20px",padding:"14px 18px"}}>
                   <span className="typing-dot"/><span className="typing-dot"/><span className="typing-dot"/>
                 </div>
               </div>
@@ -542,32 +603,21 @@ function PantallaChat() {
         )}
       </div>
 
-      {/* Input */}
-      <div style={{padding: "16px 20px 24px", maxWidth: "720px", margin: "0 auto", width: "100%", boxSizing: "border-box"}}>
-        <div style={{display: "flex", gap: "10px", alignItems: "center", background: "white", borderRadius: "28px", border: "1.5px solid #e5e5e5", padding: "8px 8px 8px 20px", boxShadow: "0 2px 20px rgba(0,0,0,0.06)", transition: "border-color 0.2s"}}
-          onFocus={e => e.currentTarget.style.borderColor = "#E4002B"}
-          onBlur={e => e.currentTarget.style.borderColor = "#e5e5e5"}
-        >
+      <div style={{padding:"16px 20px 24px",maxWidth:"720px",margin:"0 auto",width:"100%",boxSizing:"border-box",position:"relative",zIndex:1}}>
+        <div style={{display:"flex",gap:"10px",alignItems:"center",background:"rgba(255,255,255,0.8)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",borderRadius:"28px",border:"1px solid rgba(255,255,255,0.9)",padding:"8px 8px 8px 20px",boxShadow:"0 2px 20px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,1)"}}>
           <input
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleSend()}
             placeholder="Escribe tu mensaje..."
-            style={{flex: 1, border: "none", outline: "none", fontSize: "15px", fontFamily: "Nunito, sans-serif", color: "#1A1A1A", background: "transparent"}}
+            style={{flex:1,border:"none",outline:"none",fontSize:"15px",fontFamily:"Nunito, sans-serif",color:"#1A1A1A",background:"transparent"}}
           />
-          <button
-            className="send-btn"
-            onClick={handleSend}
-            disabled={!input.trim()}
-          >
-            ↑
-          </button>
+          <button className="send-btn" onClick={handleSend} disabled={!input.trim()}>↑</button>
         </div>
-        <p style={{textAlign: "center", fontSize: "11px", color: "#bbb", marginTop: "10px"}}>
+        <p style={{textAlign:"center",fontSize:"11px",color:"#bbb",marginTop:"10px"}}>
           Allie puede cometer errores. Verifica la información importante.
         </p>
       </div>
     </div>
   )
 }
-
