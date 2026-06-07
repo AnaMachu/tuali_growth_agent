@@ -1,2 +1,6 @@
-[tool.vercel]
-entrypoint = "backend.main:app"
+[project]
+name = "tuali-growth-agent"
+version = "0.1.0"
+
+[project.scripts]
+app = "backend.main:app"
