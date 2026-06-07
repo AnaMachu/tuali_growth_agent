@@ -13,10 +13,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-base-200">
-      <div className="navbar bg-primary text-primary-content shadow-sm px-4">
+      <div className="navbar text-white shadow-sm px-4" style={{background: "linear-gradient(to right, #E4002B, #F16321)"}}>
         <div className="flex-1">
           <span className="text-2xl font-black">túali</span>
-          <span className="ml-2 text-sm opacity-75">Growth Agent</span>
+          <span className="ml-2 text-sm text-white opacity-75">Growth Agent</span>
         </div>
       </div>
 
@@ -29,6 +29,67 @@ export default function App() {
       </div>
     </div>
   )
+}
+
+const btnBase = {
+  border: "2px solid #E4002B",
+  borderRadius: "12px",
+  padding: "12px",
+  background: "white",
+  color: "#1A1A1A",
+  fontWeight: "600",
+  cursor: "pointer",
+  transition: "all 0.2s ease",
+  fontSize: "14px",
+  width: "100%",
+}
+
+const btnSelected = {
+  ...btnBase,
+  background: "linear-gradient(to right, #E4002B, #F16321)",
+  color: "white",
+  border: "none",
+}
+
+const btnPrimary = {
+  width: "100%",
+  padding: "14px",
+  borderRadius: "12px",
+  border: "none",
+  background: "linear-gradient(to right, #E4002B, #F16321)",
+  color: "white",
+  fontWeight: "700",
+  fontSize: "16px",
+  cursor: "pointer",
+  transition: "all 0.2s ease",
+}
+
+const btnOutline = {
+  padding: "10px 20px",
+  borderRadius: "12px",
+  border: "2px solid #E4002B",
+  background: "white",
+  color: "#E4002B",
+  fontWeight: "600",
+  fontSize: "14px",
+  cursor: "pointer",
+  transition: "all 0.2s ease",
+}
+
+function hoverOn(e) {
+  e.target.style.background = "linear-gradient(to right, #E4002B, #F16321)"
+  e.target.style.color = "white"
+  e.target.style.transform = "scale(1.05)"
+  e.target.style.border = "none"
+}
+
+function hoverOff(e, isSelected) {
+  if (!isSelected) {
+    e.target.style.background = "white"
+    e.target.style.color = "#1A1A1A"
+    e.target.style.transform = "scale(1)"
+    e.target.style.border = "2px solid #E4002B"
+  }
 }
 
 const BUSINESS_TYPES = [
@@ -48,14 +109,20 @@ function Step1({ data, setData, onNext }) {
             <button
               key={type}
               onClick={() => setData({ ...data, businessType: type })}
-              className={`btn btn-sm btn-outline ${data.businessType === type ? "btn-primary" : ""}`}
+              style={data.businessType === type ? btnSelected : btnBase}
+              onMouseEnter={e => { if (data.businessType !== type) hoverOn(e) }}
+              onMouseLeave={e => hoverOff(e, data.businessType === type)}
             >
               {type}
             </button>
           ))}
         </div>
-        <div className="card-actions justify-end mt-4">
-          <button className="btn btn-primary w-full" disabled={!data.businessType} onClick={onNext}>
+        <div className="mt-4">
+          <button
+            disabled={!data.businessType}
+            onClick={onNext}
+            style={{...btnPrimary, background: data.businessType ? "linear-gradient(to right, #E4002B, #F16321)" : "#ccc"}}
+          >
             Siguiente →
           </button>
         </div>
@@ -64,76 +131,165 @@ function Step1({ data, setData, onNext }) {
   )
 }
 
-const GOALS = ["Aumentar ventas", "Aumentar ticket promedio", "Mantenerme estable", "No quedarme sin stock", "Aprovechar temporada"]
+const MAIN_GOALS = [
+  {
+    id: "ventas",
+    label: "📈 Quiero aumentar mis ventas",
+    desc: "El agente te ayuda a vender más activando promos y recomendaciones.",
+    subs: [
+      { id: "ticket", label: "💰 Compra promedio por cliente", desc: "Logra que cada cliente que entra a tu tienda te compre más cada vez." },
+      { id: "marca", label: "🏷️ Vender más de una marca o producto", desc: "El agente detecta qué productos se venden bien en tu zona y te sugiere tenerlos." },
+      { id: "clientes", label: "🙋 Atraer más clientes", desc: "Usa loyalty y cupones para que más gente llegue a tu tienda." },
+    ]
+  },
+  {
+    id: "estable",
+    label: "🛡️ Quiero mantenerme estable",
+    desc: "El agente cuida tu stock y tus ingresos para que nada falle.",
+    subs: [
+      { id: "stock", label: "📦 No quedarme sin mis productos básicos", desc: "El agente te avisa antes de que se agote lo que más vendes." },
+      { id: "ahorro", label: "💸 Ahorrar en mis compras", desc: "Cruza tu pedido con las promos activas para que gastes menos." },
+      { id: "puntos", label: "⭐ No perder mis puntos de loyalty", desc: "El agente te avisa cuando estás cerca de ganar un premio." },
+    ]
+  },
+  {
+    id: "entender",
+    label: "📊 Quiero entender mi negocio",
+    desc: "El agente te explica qué está pasando con tus ventas en lenguaje simple.",
+    subs: [
+      { id: "impacto", label: "✅ Ver qué acciones funcionaron", desc: "El agente te muestra qué pasó después de cada acción que tomaste." },
+      { id: "comparar", label: "🏪 Compararme con tiendas similares", desc: "Descubre qué venden otras tiendas como la tuya en tu zona." },
+    ]
+  },
+]
 
 function Step2({ data, setData, onNext, onBack }) {
+  const [mainGoal, setMainGoal] = useState("")
+  const [visibleSubs, setVisibleSubs] = useState([])
+  const selected = MAIN_GOALS.find(g => g.id === mainGoal)
+  const puedeAvanzar = mainGoal && data.goal
+
+  const handleMainGoal = (id) => {
+    setMainGoal(id)
+    setData({ ...data, goal: "" })
+    setVisibleSubs([])
+    const goal = MAIN_GOALS.find(g => g.id === id)
+    goal.subs.forEach((_, i) => {
+      setTimeout(() => {
+        setVisibleSubs(prev => [...prev, i])
+      }, i * 120)
+    })
+  }
+
   return (
     <div className="card bg-base-100 shadow">
       <div className="card-body">
-        <h2 className="card-title text-xl">¿Cuál es tu meta?</h2>
-        <p className="text-sm text-base-content/60">Dinos qué quieres lograr y en cuánto tiempo.</p>
-        <div className="flex flex-wrap gap-2 mt-2">
-          {GOALS.map((g) => (
-            <button
-              key={g}
-              onClick={() => setData({ ...data, goal: g })}
-              className={`btn btn-sm btn-outline ${data.goal === g ? "btn-primary" : ""}`}
-            >
-              {g}
-            </button>
+        <h2 className="card-title text-xl">¿Qué quieres lograr?</h2>
+        <p className="text-sm text-base-content/60">Elige tu objetivo principal.</p>
+
+        <div className="flex flex-col gap-3 mt-2">
+          {MAIN_GOALS.map((g) => (
+            <div key={g.id}>
+              <div
+                onClick={() => handleMainGoal(g.id)}
+                style={{
+                  border: mainGoal === g.id ? "none" : "2px solid #E4002B",
+                  borderRadius: "12px",
+                  padding: "14px",
+                  background: mainGoal === g.id ? "linear-gradient(to right, #E4002B, #F16321)" : "white",
+                  color: mainGoal === g.id ? "white" : "#1A1A1A",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <p style={{fontWeight: "700", fontSize: "15px"}}>{g.label}</p>
+                <p style={{fontSize: "12px", opacity: "0.8", marginTop: "4px"}}>{g.desc}</p>
+              </div>
+
+              {mainGoal === g.id && (
+                <div style={{marginLeft: "24px", marginTop: "8px", borderLeft: "2px solid #E4002B", paddingLeft: "12px", display: "flex", flexDirection: "column", gap: "8px"}}>
+                  {selected.subs.map((sub, i) => (
+                    <div
+                      key={sub.id}
+                      onClick={() => setData({ ...data, goal: sub.id })}
+                      style={{
+                        border: data.goal === sub.id ? "2px solid #E4002B" : "1px solid #E4002B55",
+                        borderRadius: "10px",
+                        padding: "10px 12px",
+                        background: data.goal === sub.id ? "linear-gradient(135deg, #fff0f0, #fff5ee)" : "white",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                        opacity: visibleSubs.includes(i) ? 1 : 0,
+                        transform: visibleSubs.includes(i) ? "translateY(0)" : "translateY(-8px)",
+                        fontSize: "13px",
+                      }}
+                    >
+                      <p style={{fontWeight: "600"}}>{sub.label}</p>
+                      <p style={{fontSize: "11px", color: "#888", marginTop: "2px"}}>{sub.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
         </div>
-        <div className="grid grid-cols-2 gap-3 mt-4">
-          <div>
-            <label className="text-xs text-base-content/60">¿Cuánto quieres crecer? (%)</label>
-            <input type="number" className="input input-bordered w-full mt-1"
-              value={data.pct} onChange={(e) => setData({ ...data, pct: e.target.value })} />
-          </div>
-          <div>
-            <label className="text-xs text-base-content/60">¿En cuántas semanas?</label>
-            <input type="number" className="input input-bordered w-full mt-1"
-              value={data.weeks} onChange={(e) => setData({ ...data, weeks: e.target.value })} />
-          </div>
-        </div>
-        {data.goal && (
-          <div className="alert mt-3 bg-primary/10 border-primary/20 text-sm">
-            Tu meta: <strong>{data.goal} un {data.pct}%</strong> en <strong>{data.weeks} semanas</strong>
-          </div>
-        )}
-        <div className="card-actions justify-between mt-4">
-          <button className="btn btn-outline" onClick={onBack}>← Atrás</button>
-          <button className="btn btn-primary" disabled={!data.goal} onClick={onNext}>Siguiente →</button>
+
+        <div className="flex justify-between mt-4">
+          <button style={btnOutline} onClick={onBack}>← Atrás</button>
+          <button
+            disabled={!puedeAvanzar}
+            onClick={onNext}
+            style={{
+              ...btnPrimary,
+              width: "auto",
+              padding: "10px 24px",
+              background: puedeAvanzar ? "linear-gradient(to right, #E4002B, #F16321)" : "#ccc",
+              cursor: puedeAvanzar ? "pointer" : "not-allowed"
+            }}
+          >
+            Siguiente →
+          </button>
         </div>
       </div>
     </div>
   )
 }
 
+
 function Step3({ data, setData, onNext, onBack }) {
+  const options = [
+    { id: "voz", label: "🎙️ Por voz", desc: "El agente te manda audios con la recomendación del día" },
+    { id: "chat", label: "💬 Por chat", desc: "El agente te manda mensajes y tú respondes cuando puedas" }
+  ]
   return (
     <div className="card bg-base-100 shadow">
       <div className="card-body">
         <h2 className="card-title text-xl">¿Cómo prefieres que te hable el agente?</h2>
         <div className="grid grid-cols-2 gap-3 mt-3">
-          {[
-            { id: "voz", label: "Por voz", desc: "El agente te manda audios con la recomendación del día" },
-            { id: "chat", label: "Por chat", desc: "El agente te manda mensajes y tú respondes cuando puedas" }
-          ].map((opt) => (
+          {options.map((opt) => (
             <div
               key={opt.id}
               onClick={() => setData({ ...data, interface: opt.id })}
-              className={`card border-2 cursor-pointer ${data.interface === opt.id ? "border-primary bg-primary/5" : "border-base-300"}`}
+              style={{
+                border: data.interface === opt.id ? "none" : "2px solid #E4002B",
+                borderRadius: "12px",
+                padding: "16px",
+                background: data.interface === opt.id ? "linear-gradient(to right, #E4002B, #F16321)" : "white",
+                color: data.interface === opt.id ? "white" : "#1A1A1A",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+              }}
             >
-              <div className="card-body p-4">
-                <p className="font-bold">{opt.label}</p>
-                <p className="text-xs text-base-content/60">{opt.desc}</p>
-              </div>
+              <p style={{fontWeight: "700", marginBottom: "6px"}}>{opt.label}</p>
+              <p style={{fontSize: "12px", opacity: "0.8"}}>{opt.desc}</p>
             </div>
           ))}
         </div>
-        <div className="card-actions justify-between mt-4">
-          <button className="btn btn-outline" onClick={onBack}>← Atrás</button>
-          <button className="btn btn-primary" onClick={onNext}>Siguiente →</button>
+        <div className="flex justify-between mt-4">
+          <button style={btnOutline} onClick={onBack}>← Atrás</button>
+          <button onClick={onNext} style={{...btnPrimary, width: "auto", padding: "10px 24px"}}>
+            Siguiente →
+          </button>
         </div>
       </div>
     </div>
@@ -141,34 +297,48 @@ function Step3({ data, setData, onNext, onBack }) {
 }
 
 function Step4({ data, setData, onNext, onBack }) {
+  const options = [
+    { id: "yomp", label: "📱 Uso YOMP", desc: "Conectamos con tu punto de venta para ver ingresos reales", tag: "Datos exactos" },
+    { id: "tuali", label: "📦 Solo uso Tuali", desc: "Usamos tu historial de pedidos como indicador de ventas", tag: "Datos inferidos" },
+    { id: "manual", label: "💰 Otro sistema", desc: "Tú nos dices cada semana cuánto vendiste", tag: "Manual" },
+  ]
   return (
     <div className="card bg-base-100 shadow">
       <div className="card-body">
         <h2 className="card-title text-xl">¿Cómo medimos tu avance?</h2>
         <div className="flex flex-col gap-3 mt-2">
-          {[
-            { id: "yomp", label: "Uso YOMP", desc: "Conectamos con tu punto de venta para ver ingresos reales", tag: "Datos exactos" },
-            { id: "tuali", label: "Solo uso Tuali", desc: "Usamos tu historial de pedidos como indicador de ventas", tag: "Datos inferidos" },
-            { id: "manual", label: "Otro sistema", desc: "Tú nos dices cada semana cuánto vendiste", tag: "Manual" },
-          ].map((opt) => (
+          {options.map((opt) => (
             <div
               key={opt.id}
               onClick={() => setData({ ...data, dataSource: opt.id })}
-              className={`card border-2 cursor-pointer ${data.dataSource === opt.id ? "border-primary bg-primary/5" : "border-base-300"}`}
+              style={{
+                border: data.dataSource === opt.id ? "none" : "2px solid #E4002B",
+                borderRadius: "12px",
+                padding: "14px",
+                background: data.dataSource === opt.id ? "linear-gradient(to right, #E4002B, #F16321)" : "white",
+                color: data.dataSource === opt.id ? "white" : "#1A1A1A",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+              }}
             >
-              <div className="card-body p-3">
-                <div className="flex justify-between items-center">
-                  <p className="font-bold">{opt.label}</p>
-                  <span className="badge badge-outline badge-sm">{opt.tag}</span>
-                </div>
-                <p className="text-xs text-base-content/60">{opt.desc}</p>
+              <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px"}}>
+                <p style={{fontWeight: "700"}}>{opt.label}</p>
+                <span style={{
+                  fontSize: "11px", padding: "2px 8px", borderRadius: "20px",
+                  background: data.dataSource === opt.id ? "rgba(255,255,255,0.3)" : "#fff5f5",
+                  color: data.dataSource === opt.id ? "white" : "#E4002B",
+                  border: data.dataSource === opt.id ? "1px solid rgba(255,255,255,0.5)" : "1px solid #E4002B"
+                }}>{opt.tag}</span>
               </div>
+              <p style={{fontSize: "12px", opacity: "0.8"}}>{opt.desc}</p>
             </div>
           ))}
         </div>
-        <div className="card-actions justify-between mt-4">
-          <button className="btn btn-outline" onClick={onBack}>← Atrás</button>
-          <button className="btn btn-primary" onClick={onNext}>Comenzar →</button>
+        <div className="flex justify-between mt-4">
+          <button style={btnOutline} onClick={onBack}>← Atrás</button>
+          <button onClick={onNext} style={{...btnPrimary, width: "auto", padding: "10px 24px"}}>
+            Comenzar →
+          </button>
         </div>
       </div>
     </div>
@@ -178,29 +348,34 @@ function Step4({ data, setData, onNext, onBack }) {
 function Dashboard({ data }) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="alert bg-primary text-primary-content">
-        <span>¡Listo! Tu agente está configurado para <strong>{data.businessType}</strong></span>
+      <div style={{background: "linear-gradient(to right, #E4002B, #F16321)", borderRadius: "12px", padding: "16px", color: "white"}}>
+        <p style={{fontWeight: "700"}}>¡Listo! Tu agente está configurado para <strong>{data.businessType}</strong></p>
       </div>
       <div className="card bg-base-100 shadow">
         <div className="card-body">
-          <div className="badge badge-primary badge-outline mb-1">Recomendación del día</div>
+          <span style={{fontSize: "11px", padding: "4px 10px", borderRadius: "20px", border: "1px solid #E4002B", color: "#E4002B", display: "inline-block", marginBottom: "8px", width: "fit-content"}}>
+            Recomendación del día
+          </span>
           <h2 className="card-title">Activa la promo de Sprite esta semana</h2>
-          <p className="text-sm text-base-content/60">Basándonos en tu historial, Sprite tiene alta rotación en tu zona. Activar la promoción de etiqueta verde puede aumentar tu ticket promedio un 12%.</p>
-          <div className="badge badge-success mt-1">Impacto estimado: +12% ventas</div>
-          <div className="card-actions justify-end mt-4">
-            <button className="btn btn-outline btn-sm">Otra opción</button>
-            <button className="btn btn-primary btn-sm">Lo hago ✓</button>
+          <p className="text-sm text-base-content/60">Basándonos en tu historial, Sprite tiene alta rotación en tu zona. Activar la promoción puede aumentar tu ticket promedio un 12%.</p>
+          <span style={{fontSize: "12px", padding: "4px 10px", borderRadius: "20px", background: "#f0fff4", color: "#22C55E", border: "1px solid #22C55E", display: "inline-block", marginTop: "8px", width: "fit-content"}}>
+            Impacto estimado: +12% ventas
+          </span>
+          <div className="flex justify-end gap-2 mt-4">
+            <button style={btnOutline}>Otra opción</button>
+            <button style={{...btnPrimary, width: "auto", padding: "10px 20px"}}>Lo hago ✓</button>
           </div>
         </div>
       </div>
       <div className="card bg-base-100 shadow">
         <div className="card-body p-4">
           <p className="text-sm font-semibold">Tu meta: {data.goal} {data.pct}% en {data.weeks} semanas</p>
-          <progress className="progress progress-primary w-full mt-2" value="15" max="100" />
+          <div style={{background: "#f5f5f5", borderRadius: "999px", height: "8px", marginTop: "8px", overflow: "hidden"}}>
+            <div style={{background: "linear-gradient(to right, #E4002B, #F16321)", width: "15%", height: "100%", borderRadius: "999px"}}/>
+          </div>
           <p className="text-xs text-base-content/60 mt-1">Progreso estimado esta semana: 15%</p>
         </div>
       </div>
     </div>
   )
 }
-
