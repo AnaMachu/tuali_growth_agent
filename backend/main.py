@@ -20,8 +20,8 @@ app.include_router(yomp_router)
 
 
 @app.get("/")
-def health_check() -> dict[str, str]:
-    return {"status": "ok"}
+def root() -> dict[str, str]:
+    return {"status": "ok", "service": "tuali-growth-agent"}
 
 
 @app.get("/health")
