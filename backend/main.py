@@ -18,6 +18,9 @@ app.include_router(agent_router)
 app.include_router(tts_router)
 app.include_router(yomp_router)
 
+@app.get("/")
+def root() -> dict[str, str]:
+    return {"status": "ok", "service": "tuali-growth-agent"}
 
 @app.get("/")
 def health_check() -> dict[str, str]:
