@@ -1,6 +1,6 @@
 # tuali_growth_agent
 
-Repo for Hack4her "Tuali Growth Agent" track.
+Repo for Hack4her 2026 "Tuali Growth Agent" track.
 
 ## Project Structure
 
