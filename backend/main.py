@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.api.agent import router as agent_router
-from backend.api.tts import router as tts_router
-from backend.api.yomp import router as yomp_router
+from api.agent import router as agent_router
+from api.tts import router as tts_router
+from api.yomp import router as yomp_router
 
 
 app = FastAPI(title="Tuali Growth Agent API", version="0.1.0")

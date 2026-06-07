@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import HTMLResponse, Response
 from pydantic import BaseModel
 
-from backend.services.tts_service import generate_elevenlabs_speech_bytes, generate_tts
+from services.tts_service import generate_elevenlabs_speech_bytes, generate_tts
 
 
 router = APIRouter(prefix="/tts", tags=["tts"])
